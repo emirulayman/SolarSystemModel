@@ -49,7 +49,7 @@
 
     <div class="absolute top-4 left-4 bottom-4 flex flex-col gap-4 z-10 pointer-events-none w-72 max-h-[calc(100vh-2rem)]">
         
-        <div class="bg-gray-900/80 backdrop-blur-md border border-gray-700 p-5 rounded-xl shadow-2xl w-full pointer-events-auto shrink-0">
+        <div class="bg-gray-900/80 backdrop-blur-md border border-gray-700 p-5 rounded-xl shadow-2xl w-full pointer-events-auto shrink-0 max-h-[45vh] overflow-y-auto">
             <h1 class="text-xl font-bold mb-2 text-blue-400">Solar System</h1>
             
             <div class="text-xs text-gray-300 mb-5 space-y-1 bg-gray-800/50 p-3 rounded-lg border border-gray-700/50">
@@ -90,6 +90,28 @@
                     <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                 </label>
             </div>
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                <span class="text-sm font-semibold tracking-wide text-purple-400">Spacetime Grid</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="grid-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></div>
+                </label>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                <span class="text-sm font-semibold tracking-wide text-rose-400">Velocity Ribbons</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="ribbon-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]"></div>
+                </label>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                <span class="text-sm font-semibold tracking-wide text-cyan-200">Oort Cloud</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="oort-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>
+                </label>
+            </div>
+            
 
             <button id="tour-btn" class="mt-6 w-full bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/50 text-indigo-300 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all shadow-[inset_0_0_15px_rgba(79,70,229,0.2)]">
                 Start Auto-Tour
@@ -228,36 +250,6 @@
             </div>
     </div>
     
-    <div id="telemetry-hud" class="mt-auto bg-[#0b1120]/80 backdrop-blur-xl border border-blue-500/30 p-4 rounded-xl shadow-[0_0_20px_rgba(0,100,255,0.15)] w-full pointer-events-none transition-all duration-500 opacity-0 transform translate-y-4 shrink-0">
-        <div class="flex items-center gap-2 mb-3 border-b border-gray-700/50 pb-2">
-            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse" id="tel-status"></div>
-            <h3 class="text-blue-400 text-[11px] font-bold uppercase tracking-widest" id="tel-name">No Target</h3>
-        </div>
-        <div class="space-y-2 text-xs font-mono text-gray-300">
-            <div class="flex justify-between items-end">
-                <span class="text-gray-500 uppercase text-[9px]">Dist to Sun</span> 
-                <span id="tel-dist" class="text-white text-sm">0.00 Mkm</span>
-            </div>
-            <div class="flex justify-between items-end">
-                <span class="text-gray-500 uppercase text-[9px]">Orbital Vel</span> 
-                <span id="tel-vel" class="text-white text-sm">0.00 km/s</span>
-            </div>
-            <div class="flex justify-between items-end">
-                <span class="text-gray-500 uppercase text-[9px]">Coord X</span> 
-                <span id="tel-x" class="text-blue-300">0.00</span>
-            </div>
-            <div class="flex justify-between items-end">
-                <span class="text-gray-500 uppercase text-[9px]">Coord Z</span> 
-                <span id="tel-z" class="text-blue-300">0.00</span>
-            </div>
-        </div>
-        <button id="hud-pause-btn" class="mt-3 w-full bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/50 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-[inset_0_0_10px_rgba(0,100,255,0.2)] pointer-events-auto">
-            Pause Orbit
-        </button>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
@@ -270,7 +262,6 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Lensflare.js"></script>
 
     <script>
-        // --- Cinematic Audio Engine (Web Audio API) ---
         // --- UI Audio Engine (Blips Only) ---
         let audioCtx;
 
@@ -314,7 +305,8 @@
               uranusMap: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/uranusmap.jpg',
               neptuneMap: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/neptunemap.jpg'
           };
-          // ==========================================
+          
+// ==========================================
 // --- CUSTOM GLSL SHADERS FOR THE SUN ---
 // ==========================================
 
@@ -566,12 +558,20 @@ const sunFragmentShader = `
             scene.background = new THREE.Color(0x02050a);
 
             // --- 2. Camera Setup ---
-            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 15000);
             camera.position.set(0, 50, 120);
 
             // --- 3. Renderer Setup ---
             const renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // --- ADDED: ENABLE 3D CLIPPING ---
+            renderer.localClippingEnabled = true; 
+            const structureClipPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 10000);
+            let isStructureView = false;
+            let structureCutawayAmount = { value: 10000 }; // Used for smooth sliding animation
+            container.appendChild(renderer.domElement);
             renderer.setPixelRatio(window.devicePixelRatio);
             container.appendChild(renderer.domElement);
             // --- 3.5 Post-Processing (Bloom) Setup ---
@@ -591,7 +591,7 @@ const sunFragmentShader = `
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.maxDistance = 500;
+            controls.maxDistance = 8000;
             controls.minDistance = 10;
 
             // --- 5. Lighting ---
@@ -692,6 +692,63 @@ const sunFragmentShader = `
             
             // Expose uniforms to the window so the animation loop can find it
             window.starUniforms = starUniforms;
+
+            // --- ADDED: 6.5 IMMERSIVE MILKY WAY SKYBOX ---
+            const skyboxGeo = new THREE.SphereGeometry(1500, 64, 64);
+            const skyboxMat = new THREE.MeshBasicMaterial({
+                // Using a reliable galaxy texture from the same CDN you are already using
+                map: textureLoader.load('https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/galaxy_starfield.png'),
+                side: THREE.BackSide, // Render on the inside of the sphere!
+                transparent: true,
+                opacity: 0.5,
+                color: 0x99bbff, // Cool blue tint to contrast the warm sun
+                depthWrite: false
+            });
+            const skyboxMesh = new THREE.Mesh(skyboxGeo, skyboxMat);
+            scene.add(skyboxMesh);
+
+            // --- ADDED: 6.6 DYNAMIC CAMERA LENS DIRT ---
+            // 1. Procedurally generate a "dusty" texture using an off-screen Canvas
+            const dirtCanvas = document.createElement('canvas');
+            dirtCanvas.width = 512;
+            dirtCanvas.height = 512;
+            const dirtCtx = dirtCanvas.getContext('2d');
+            dirtCtx.fillStyle = '#000000'; // Black background (will be transparent)
+            dirtCtx.fillRect(0, 0, 512, 512);
+            
+            // Scatter 300 random dust particles
+            for(let i=0; i<300; i++) {
+                dirtCtx.beginPath();
+                dirtCtx.arc(Math.random()*512, Math.random()*512, Math.random()*3, 0, Math.PI*2);
+                dirtCtx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.15})`; // Faint white
+                dirtCtx.fill();
+            }
+            // Add 20 larger lens smudges
+            for(let i=0; i<20; i++) {
+                dirtCtx.beginPath();
+                dirtCtx.ellipse(Math.random()*512, Math.random()*512, Math.random()*20+10, Math.random()*5+2, Math.random()*Math.PI, 0, Math.PI*2);
+                dirtCtx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.08})`; 
+                dirtCtx.fill();
+            }
+            
+            // 2. Map the texture to a 2D Sprite plane
+            const dirtTexture = new THREE.CanvasTexture(dirtCanvas);
+            const dirtMaterial = new THREE.SpriteMaterial({
+                map: dirtTexture,
+                color: 0xffaa44, // Warm golden hour tint to match the Sun
+                transparent: true,
+                opacity: 0,      // Starts 100% invisible!
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                depthTest: false // Renders over absolutely everything
+            });
+            const lensDirtSprite = new THREE.Sprite(dirtMaterial);
+            
+            // 3. Lock it exactly in front of the camera lens
+            lensDirtSprite.position.set(0, 0, -1); 
+            lensDirtSprite.scale.set(3, 3, 1); // Stretch to fill the screen
+            camera.add(lensDirtSprite);
+            scene.add(camera); // We must add the camera to the scene for attached children to render!
 
             // --- 7. Data from React App ---
             const systemData = [
@@ -819,6 +876,110 @@ const sunFragmentShader = `
             const planets = [];
             const orbitLines = [];
             let sunMesh;
+            // --- IMPROVED OORT CLOUD (Dynamic, Twinkling, Hills Cloud Distribution) ---
+            const oortGroup = new THREE.Group();
+            const oortCount = 12000; // Increased count for better density
+            const oortGeo = new THREE.BufferGeometry();
+            
+            const oortPos = new Float32Array(oortCount * 3);
+            const oortColors = new Float32Array(oortCount * 3);
+            const oortSizes = new Float32Array(oortCount);   // New: Individual sizes
+            const oortPhases = new Float32Array(oortCount);  // New: For twinkling
+
+            const oortInnerRadius = 2500;
+            const oortOuterRadius = 4500; // Pushed out further for scale
+
+            for(let i = 0; i < oortCount; i++) {
+                // 1. Spherical angle distribution
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
+                
+                // 2. Non-linear distribution: Bias towards the inner edge (Hills Cloud effect)
+                // Using Math.pow concentrates the random values closer to 0
+                const radiusFraction = Math.pow(Math.random(), 2.5); 
+                const r = oortInnerRadius + radiusFraction * (oortOuterRadius - oortInnerRadius);
+
+                oortPos[i*3]     = r * Math.sin(phi) * Math.cos(theta);
+                oortPos[i*3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                oortPos[i*3 + 2] = r * Math.cos(phi);
+
+                // 3. Icy colors: Whites, pale blues, and faint cyans
+                const colorType = Math.random();
+                if (colorType > 0.7) {
+                    oortColors[i*3] = 0.9; oortColors[i*3+1] = 0.9; oortColors[i*3+2] = 1.0; // Ice white
+                } else if (colorType > 0.3) {
+                    oortColors[i*3] = 0.6; oortColors[i*3+1] = 0.8; oortColors[i*3+2] = 1.0; // Pale blue
+                } else {
+                    oortColors[i*3] = 0.4; oortColors[i*3+1] = 0.6; oortColors[i*3+2] = 0.9; // Deep icy blue
+                }
+                
+                // 4. Randomize sizes and twinkle phases
+                oortSizes[i] = 0.5 + Math.random() * 2.5; // Varying chunk sizes
+                oortPhases[i] = Math.random() * Math.PI * 2; // Unique blink start time
+            }
+
+            oortGeo.setAttribute('position', new THREE.BufferAttribute(oortPos, 3));
+            oortGeo.setAttribute('color', new THREE.BufferAttribute(oortColors, 3));
+            oortGeo.setAttribute('size', new THREE.BufferAttribute(oortSizes, 1));
+            oortGeo.setAttribute('phase', new THREE.BufferAttribute(oortPhases, 1));
+
+            // 5. Improved Shader with Twinkling
+            const oortUniforms = { time: { value: 0.0 } };
+            window.oortUniforms = oortUniforms; // Expose to the animation loop
+
+            const oortMat = new THREE.ShaderMaterial({
+                uniforms: oortUniforms,
+                vertexShader: `
+                    uniform float time;
+                    attribute vec3 color;
+                    attribute float size;
+                    attribute float phase;
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    void main() {
+                        vColor = color;
+                        
+                        // Twinkle math: slow pulse based on phase and time
+                        float twinkle = 0.5 + 0.5 * sin(time * 0.5 + phase);
+                        vAlpha = 0.05 + (twinkle * 0.25); // Opacity pulses smoothly
+                        
+                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                        
+                        // Dynamic sizing based on the individual size attribute and twinkle
+                        gl_PointSize = (18000.0 * size * (0.8 + twinkle * 0.2)) / -mvPosition.z; 
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    void main() {
+                        // Carve point into a soft circle
+                        vec2 xy = gl_PointCoord.xy - vec2(0.5);
+                        float dist = length(xy);
+                        if (dist > 0.5) discard;
+                        
+                        // Soft gradient edge
+                        float alpha = (0.5 - dist) * 2.0 * vAlpha;
+                        
+                        // Give it a subtle hot core
+                        vec3 finalColor = mix(vColor, vec3(1.0), 1.0 - (dist * 2.0));
+                        
+                        gl_FragColor = vec4(finalColor, alpha); 
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            const oortMesh = new THREE.Points(oortGeo, oortMat);
+            oortGroup.add(oortMesh);
+            oortGroup.visible = false; 
+            scene.add(oortGroup);
+            
 
             systemData.forEach((data) => {
                 // Render The Sun with Custom Shaders & LOD
@@ -889,6 +1050,106 @@ const sunFragmentShader = `
         // Store uniforms for animation update
         window.sunUniforms = sunUniforms;
         window.coronaUniforms = sunCoronaMaterial.uniforms;
+        // --- ADDED: 3. DYNAMIC SOLAR FLARES & CORONAL LOOPS ---
+                    const flareGroup = new THREE.Group();
+                    const flareCount = 15; // Increased count to have a busy, active star!
+                    const flares = [];
+
+                    // Custom Shaders for the Plasma flow
+                    const flareVert = `
+                        varying vec2 vUv;
+                        void main() {
+                            vUv = uv;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                        }
+                    `;
+
+                    const flareFrag = `
+                        uniform float time;
+                        uniform float offset;
+                        varying vec2 vUv;
+
+                        // 2D Noise function for plasma turbulence
+                        float random(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+                        float noise(vec2 p) {
+                            vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);
+                            return mix(mix(random(i), random(i + vec2(1.0, 0.0)), f.x),
+                                       mix(random(i + vec2(0.0, 1.0)), random(i + vec2(1.0, 1.0)), f.x), f.y);
+                        }
+
+                        void main() {
+                            vec2 uv = vUv;
+                            uv.x -= time * 0.4 + offset; 
+
+                            float n1 = noise(uv * vec2(15.0, 8.0));
+                            float n2 = noise(uv * vec2(30.0, 15.0) - vec2(time * 0.5));
+                            
+                            float edgeFade = sin(vUv.y * 3.14159); 
+                            float rootFade = smoothstep(0.0, 0.1, vUv.x);
+                            float tipFade = smoothstep(1.0, 0.4, vUv.x); 
+                            
+                            float intensity = n1 * n2 * edgeFade * rootFade * tipFade;
+                            
+                            vec3 color = mix(vec3(0.8, 0.1, 0.0), vec3(1.0, 0.9, 0.2), intensity * 2.5);
+
+                            gl_FragColor = vec4(color, intensity * 3.0);
+                        }
+                    `;
+
+                    for (let i = 0; i < flareCount; i++) {
+                        const pivot = new THREE.Group();
+                        
+                        // Decide if this is a massive CME or a small Coronal Loop
+                        const isCME = (i % 4 === 0); // 1 in every 4 flares is a massive burst
+                        
+                        let loopRadius, loopThickness, arcLength;
+                        
+                        if (isCME) {
+                            // Massive, open-ended CME burst
+                            loopRadius = 1.5 + Math.random() * 2.0; 
+                            loopThickness = 0.08 + Math.random() * 0.1;
+                            arcLength = Math.PI * (0.3 + Math.random() * 0.4); 
+                        } else {
+                            // Smaller, tightly connected Coronal Loop ("Mug Handle")
+                            // Much smaller radius to keep them close to the surface!
+                            loopRadius = 0.3 + Math.random() * 0.7; 
+                            loopThickness = 0.03 + Math.random() * 0.05;
+                            arcLength = Math.PI; // Perfect half-circle to connect back
+                        }
+                        
+                        const flareGeo = new THREE.TorusGeometry(loopRadius, loopThickness, 16, 64, arcLength);
+                        
+                        const flareMat = new THREE.ShaderMaterial({
+                            uniforms: {
+                                time: { value: 0.0 },
+                                offset: { value: Math.random() * 100.0 } 
+                            },
+                            vertexShader: flareVert,
+                            fragmentShader: flareFrag,
+                            transparent: true,
+                            blending: THREE.AdditiveBlending,
+                            depthWrite: false,
+                            side: THREE.DoubleSide
+                        });
+
+                        const flareMesh = new THREE.Mesh(flareGeo, flareMat);
+                        
+                        // Push the arch outward to the Sun's surface
+                        flareMesh.position.y = data.radius - (loopRadius * 0.1); 
+                        
+                        pivot.add(flareMesh);
+                        pivot.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
+                        
+                        flareGroup.add(pivot);
+                        flares.push({ 
+                            pivot: pivot, 
+                            uniformObj: flareMat.uniforms, 
+                            speed: 0.5 + Math.random() * 1.0 
+                        });
+                    }
+
+                    sunGroup.add(flareGroup);
+                    window.solarFlares = flares;
 
                 } else {
                     const semiMajorAxis = data.distance;
@@ -963,8 +1224,37 @@ const sunFragmentShader = `
                         // Standard material for the rest
                         material = new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.6, metalness: 0.1 });
                     }
+                    
+                    // --- ADDED: APPLY CLIPPING TO CRUST ---
+                    if (material.isMeshStandardMaterial) {
+                        material.clippingPlanes = [structureClipPlane];
+                        material.side = THREE.DoubleSide; // Shows wall thickness when cut
+                    }
+                    
                     const planetMesh = new THREE.Mesh(geometry, material);
                     planetMesh.userData = data; 
+
+                    // --- ADDED: BUILD INTERNAL STRUCTURE ---
+                    if (!data.isSun && !data.isComet) {
+                        // The Mantle (Magma)
+                        const mantleGeo = new THREE.SphereGeometry(data.radius * 0.7, 32, 32);
+                        const mantleMat = new THREE.MeshStandardMaterial({
+                            color: 0xff4400, roughness: 0.9,
+                            clippingPlanes: [structureClipPlane], side: THREE.DoubleSide
+                        });
+                        const mantleMesh = new THREE.Mesh(mantleGeo, mantleMat);
+                        
+                        // The Core (Solid/Glowing)
+                        const coreGeo = new THREE.SphereGeometry(data.radius * 0.35, 32, 32);
+                        const coreMat = new THREE.MeshStandardMaterial({
+                            color: 0xffdd00, emissive: 0xffaa00, emissiveIntensity: 0.6,
+                            clippingPlanes: [structureClipPlane], side: THREE.DoubleSide
+                        });
+                        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+                        
+                        planetMesh.add(mantleMesh);
+                        planetMesh.add(coreMesh);
+                    }
 
                     // --- ADD CLOUDS SPECIFICALLY FOR EARTH ---
                     if (data.name === 'Earth') {
@@ -977,6 +1267,7 @@ const sunFragmentShader = `
                         const cloudMat = new THREE.MeshStandardMaterial({
                             map: cloudTex,
                             transparent: true,
+                            clippingPlanes: [structureClipPlane],
                             opacity: 0.8,
                             blending: THREE.AdditiveBlending,
                             depthWrite: false // Prevents clouds from messing up the render order
@@ -1211,19 +1502,71 @@ const sunFragmentShader = `
                     scene.add(orbitLine);
                     orbitLines.push(orbitLine);
 
+                    // --- ADDED: VELOCITY RIBBON SHADERS & SETUP ---
+                    const trailLength = 150; // How long the ribbon trails behind the planet
+                    const trailPositions = new Float32Array(trailLength * 3);
+                    const trailColors = new Float32Array(trailLength * 3);
+                    const trailAlphas = new Float32Array(trailLength);
+                    
+                    // Create an alpha gradient so the tail smoothly fades to invisible at the end
+                    for(let i = 0; i < trailLength; i++) {
+                        trailAlphas[i] = 1.0 - (i / trailLength); 
+                    }
+                    
+                    const trailGeo = new THREE.BufferGeometry();
+                    trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+                    trailGeo.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
+                    trailGeo.setAttribute('alpha', new THREE.BufferAttribute(trailAlphas, 1));
+                    
+                    const trailMat = new THREE.ShaderMaterial({
+                        vertexShader: `
+                            attribute vec3 color;
+                            attribute float alpha;
+                            varying vec3 vColor;
+                            varying float vAlpha;
+                            void main() {
+                                vColor = color;
+                                vAlpha = alpha;
+                                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                            }
+                        `,
+                        fragmentShader: `
+                            varying vec3 vColor;
+                            varying float vAlpha;
+                            void main() {
+                                gl_FragColor = vec4(vColor, vAlpha * 0.85); // High glowing opacity at the head
+                            }
+                        `,
+                        transparent: true,
+                        blending: THREE.AdditiveBlending, // Makes the colors pop like lasers
+                        depthWrite: false
+                    });
+                    
+                    const trailLine = new THREE.Line(trailGeo, trailMat);
+                    trailLine.visible = false; // Hidden by default
+                    
+                    // The Sun doesn't move, so it doesn't get a trail!
+                    if (!data.isSun) {
+                        scene.add(trailLine); 
+                    }
+
                     // --- CHANGED: Store planet data for physics animation ---
                     planets.push({ 
                         mesh: planetMesh, 
                         group: planetGroup, 
                         a: semiMajorAxis, 
                         b: semiMinorAxis, 
-                        e: e,              // Store eccentricity
-                        inc: inc,          // Store inclination
+                        e: e,              
+                        inc: inc,          
                         speed: data.speed, 
-                        M: Math.random() * Math.PI * 2, // Replaced 'angle' with Mean Anomaly (M)
-                        moons: planetMoons 
+                        M: Math.random() * Math.PI * 2, 
+                        moons: planetMoons,
+                        // Attach the ribbon data to the planet object
+                        trailLine: data.isSun ? null : trailLine,
+                        trailPositions: trailPositions,
+                        trailColors: trailColors,
+                        trailHistory: [] 
                     });
-                    // --- ENHANCED FEATURE 4: COMET GRAPHICS ---
                     // --- ENHANCED FEATURE 4: COMET GRAPHICS (WISPY GAS SHADER) ---
                     if (data.isComet) {
                         // 1. Give the nucleus an icy, cratered texture (reusing the moon bump map)
@@ -1235,7 +1578,6 @@ const sunFragmentShader = `
                             bumpMap: textureLoader.load(textureUrls.moonMap || 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/textures/planets/moon_1024.jpg'),
                             bumpScale: 0.08
                         });
-
                         // 2. The Coma (Glowing atmospheric halo around the icy nucleus)
                         const comaGeo = new THREE.SphereGeometry(data.radius * 2.5, 32, 32);
                         const comaMat = new THREE.MeshBasicMaterial({
@@ -1249,86 +1591,70 @@ const sunFragmentShader = `
                         pData.group.add(comaMesh); 
                         pData.comaMesh = comaMesh; 
 
-                        // 3. The Cinematic Volumetric Tail Cone
-                        const tailGeo = new THREE.ConeGeometry(4.0, 50, 32, 16); 
-                        tailGeo.translate(0, -25, 0); 
-                        tailGeo.rotateX(-Math.PI / 2); 
-                        
-                        const tailMat = new THREE.ShaderMaterial({
+                        // --- FIXED: 3. DYNAMIC PARTICLE EMISSION TAIL ---
+                        const particleCount = 2000;
+                        const pGeo = new THREE.BufferGeometry();
+                        const pPos = new Float32Array(particleCount * 3);
+                        const pVel = new Float32Array(particleCount * 3);
+                        const pLife = new Float32Array(particleCount); // Tracks how long until the particle fades out
+
+                        // Initialize all particles as "dead" (lifetime 0)
+                        for(let i = 0; i < particleCount; i++) pLife[i] = 0.0;
+
+                        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+                        pGeo.setAttribute('lifetime', new THREE.BufferAttribute(pLife, 1));
+
+                        const pMat = new THREE.ShaderMaterial({
                             uniforms: {
-                                color: { value: new THREE.Color(0x3b82f6) },     // Deep cosmic blue gas
-                                coreColor: { value: new THREE.Color(0xe0f2fe) }, // Brilliant white-hot ion core
-                                intensity: { value: 1.0 },
-                                time: { value: 0.0 }                             // Driven by animation loop
+                                color: { value: new THREE.Color(0x3b82f6) }, // Deep blue gas
+                                coreColor: { value: new THREE.Color(0xffffff) } // White hot center
                             },
                             vertexShader: `
-                                varying vec3 vPos;
-                                varying vec2 vUv;
+                                attribute float lifetime;
+                                varying float vLife;
                                 void main() {
-                                    vPos = position;
-                                    vUv = uv;
-                                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                                    vLife = lifetime;
+                                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                                    // Particles shrink as they die and fade away
+                                    gl_PointSize = (40.0 * lifetime) / -mvPosition.z; 
+                                    gl_Position = projectionMatrix * mvPosition;
                                 }
                             `,
                             fragmentShader: `
                                 uniform vec3 color;
                                 uniform vec3 coreColor;
-                                uniform float intensity;
-                                uniform float time;
-                                varying vec3 vPos;
-                                varying vec2 vUv;
-
-                                // High-performance pseudo-random function for gas noise
-                                float hash(vec2 p) {
-                                    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-                                }
-
-                                // 2D Noise to generate wispy plasma filaments
-                                float noise(vec2 p) {
-                                    vec2 i = floor(p);
-                                    vec2 f = fract(p);
-                                    f = f * f * (3.0 - 2.0 * f);
-                                    return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), f.x),
-                                               mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), f.x), f.y);
-                                }
-
+                                varying float vLife;
                                 void main() {
-                                    // Fade out gradually along the 50-unit length of the tail
-                                    float lengthwiseFade = smoothstep(50.0, 0.0, vPos.z); 
+                                    // Create a soft glowing circle mathematically
+                                    vec2 xy = gl_PointCoord.xy - vec2(0.5);
+                                    float dist = length(xy);
+                                    if (dist > 0.5) discard; // Cut off the square corners
                                     
-                                    // Soft edge fade across the radius of the cone
-                                    float distFromCenter = length(vPos.xy);
-                                    float edgeFade = smoothstep(4.0, 0.0, distFromCenter);
+                                    // Soft edge fade
+                                    float alpha = (0.5 - dist) * 2.0 * vLife;
                                     
-                                    // Layered scrolling noise to simulate solar wind stripping particles away
-                                    vec2 speed = vec2(vUv.x * 4.0, vUv.y * 8.0 - time * 3.5);
-                                    float filaments = noise(speed) * 0.6 + noise(speed * 2.0 + time) * 0.3;
+                                    // Hot center, blue edges
+                                    vec3 finalColor = mix(color, coreColor, vLife * (1.0 - dist * 2.0));
                                     
-                                    // Bright focused center stream (The Ion Tail core)
-                                    float coreDist = length(vPos.xy);
-                                    float coreStream = smoothstep(0.6, 0.0, coreDist) * lengthwiseFade;
-                                    
-                                    // Mix base cosmic blue with light blue highlights in the turbulent filaments
-                                    vec3 dynamicGasColor = mix(color, vec3(0.4, 0.75, 1.0), filaments);
-                                    
-                                    // Overlay the white-hot inner core
-                                    vec3 finalColor = mix(dynamicGasColor, coreColor, coreStream * 0.8);
-                                    
-                                    // Compose the gaseous transparency
-                                    float alpha = (edgeFade * 0.2 + filaments * edgeFade * 0.6 + coreStream * 0.4) * lengthwiseFade * intensity;
-                                    
-                                    gl_FragColor = vec4(finalColor, alpha);
+                                    gl_FragColor = vec4(finalColor, alpha * 0.8);
                                 }
                             `,
                             transparent: true,
                             blending: THREE.AdditiveBlending,
-                            depthWrite: false,
-                            side: THREE.DoubleSide
+                            depthWrite: false
                         });
+
+                        const particleMesh = new THREE.Points(pGeo, pMat);
+                        scene.add(particleMesh); // Add to SCENE, not the comet group, so they trail behind!
                         
-                        const tailMesh = new THREE.Mesh(tailGeo, tailMat);
-                        scene.add(tailMesh);
-                        pData.tailMesh = tailMesh; 
+                        // Save the data arrays to the planet object so the animation loop can access them
+                        pData.particles = { 
+                            count: particleCount, 
+                            pos: pPos, 
+                            vel: pVel, 
+                            life: pLife, 
+                            mesh: particleMesh 
+                        };
                     }
                 }
             });
@@ -1446,6 +1772,94 @@ const sunFragmentShader = `
             habitableZone.rotation.x = Math.PI / 2; // Lay it flat to match the orbital plane
             habitableZone.visible = false; // Hidden by default until the user clicks the toggle
             scene.add(habitableZone);
+            // --- ADDED: SPACETIME GRAVITY GRID ---
+            const gridToggle = document.getElementById('grid-toggle');
+            
+            // Create a highly subdivided plane (150x150 segments = 22,500 vertices to bend)
+            const gridGeo = new THREE.PlaneGeometry(350, 350, 150, 150);
+            
+            // We will pass the positions of the Sun + 8 Planets to the GPU
+            const gravityBodies = [];
+            for (let i = 0; i < 9; i++) gravityBodies.push(new THREE.Vector4(0, 0, 0, 0));
+
+            const gridMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    bodies: { value: gravityBodies },
+                    baseColor: { value: new THREE.Color(0x1e3a8a) }, 
+                    coreColor: { value: new THREE.Color(0x00ffcc) }  
+                },
+                vertexShader: `
+                    uniform vec4 bodies[9]; 
+                    varying float vDepth;
+                    
+                    void main() {
+                        vec3 pos = position;
+                        float totalDisplacement = 0.0;
+                        
+                        vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+                        
+                        for(int i = 0; i < 9; i++) {
+                            float dist = distance(worldPos.xz, bodies[i].xz);
+                            
+                            // --- FIXED: GAUSSIAN BOWL SHAPE ---
+                            // Uses exponential decay to create a smooth, rounded bell-curve depression
+                            // A smaller spread multiplier makes the bowl wider and smoother
+                            float spread = (bodies[i].w > 10.0) ? 0.00015 : 0.05; 
+                            float depth = bodies[i].w * exp(-(dist * dist) * spread);
+                            
+                            totalDisplacement -= depth;
+                        }
+                        
+                        pos.z += totalDisplacement; 
+                        vDepth = totalDisplacement; 
+                        
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 baseColor;
+                    uniform vec3 coreColor;
+                    varying float vDepth;
+                    
+                    void main() {
+                        // The deeper the grid bends, the more neon it glows
+                        float glowFactor = smoothstep(0.0, -30.0, vDepth);
+                        vec3 finalColor = mix(baseColor, coreColor, glowFactor);
+                        
+                        // Make the edges of the grid fade out into transparency
+                        gl_FragColor = vec4(finalColor, 0.3 + (glowFactor * 0.7));
+                    }
+                `,
+                wireframe: true,
+                transparent: true,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+
+            const spacetimeGrid = new THREE.Mesh(gridGeo, gridMat);
+            spacetimeGrid.rotation.x = -Math.PI / 2; // Lay it flat underneath the planets
+            spacetimeGrid.position.y = -8;           // Drop it 8 units down so orbits don't clip through
+            spacetimeGrid.visible = false;
+            scene.add(spacetimeGrid);
+
+            gridToggle.addEventListener('change', (e) => {
+                spacetimeGrid.visible = e.target.checked;
+                playBlip(e.target.checked ? 750 : 450, 0.05);
+            });
+            // --- ADDED: RIBBON TOGGLE LOGIC ---
+            const ribbonToggle = document.getElementById('ribbon-toggle');
+            ribbonToggle.addEventListener('change', (e) => {
+                planets.forEach(p => {
+                    if (p.trailLine) p.trailLine.visible = e.target.checked;
+                });
+                playBlip(e.target.checked ? 750 : 450, 0.05);
+            });
+            // --- ADDED: OORT CLOUD TOGGLE LOGIC ---
+            const oortToggle = document.getElementById('oort-toggle');
+            oortToggle.addEventListener('change', (e) => {
+                oortGroup.visible = e.target.checked;
+                playBlip(e.target.checked ? 750 : 450, 0.05);
+            });
             // --- FEATURE 5: Phantom Earth Hologram ---
             const phantomGeo = new THREE.SphereGeometry(1.0, 32, 32); // Earth's exact radius is 1.0 in our engine!
             const phantomMat = new THREE.MeshStandardMaterial({
@@ -1528,6 +1942,32 @@ const sunFragmentShader = `
                     const targetContent = document.getElementById(btn.dataset.target);
                     targetContent.classList.remove('hidden');
                     targetContent.classList.add('block');
+                    
+                    // --- FIXED: ACTIVATE STRUCTURE CUTAWAY ---
+                    isStructureView = (btn.dataset.target === 'tab-structure');
+                    
+                    if (activeTelemetryPlanet) {
+                        // Dynamically calculate distance based on the actual size of the planet
+                        const radius = activeTelemetryPlanet.mesh.userData.radius || 4;
+                        const startVal = isStructureView ? radius * 1.5 : 0;
+                        const endVal = isStructureView ? 0 : radius * 1.5;
+                        
+                        structureCutawayAmount.value = startVal;
+
+                        // Smoothly slide the clipping plane in or out
+                        new TWEEN.Tween(structureCutawayAmount)
+                            .to({ value: endVal }, 1500)
+                            .easing(TWEEN.Easing.Cubic.InOut)
+                            .start();
+                            
+                        // For custom shader planets (Mercury, Venus), trigger X-Ray fade instead
+                        if (activeTelemetryPlanet.mesh.material.isShaderMaterial) {
+                            activeTelemetryPlanet.mesh.material.transparent = true;
+                            new TWEEN.Tween(activeTelemetryPlanet.mesh.material)
+                                .to({ opacity: isStructureView ? 0.3 : 1.0 }, 1500)
+                                .start();
+                        }
+                    }
                 });
             });
 
@@ -1818,6 +2258,16 @@ const sunFragmentShader = `
 
             closeModalBtn.addEventListener('click', () => {
               playBlip(400, 0.05);
+              
+                // --- FIXED: RESET CLIPPING PLANE ---
+                isStructureView = false;
+                structureCutawayAmount.value = 10000;
+                structureClipPlane.constant = 10000;
+                if (activeTelemetryPlanet && activeTelemetryPlanet.mesh.material.isShaderMaterial) {
+                     activeTelemetryPlanet.mesh.material.opacity = 1.0;
+                     activeTelemetryPlanet.mesh.material.transparent = false;
+                }
+
                 // --- 1. FORCE UNPAUSE ON CLOSE ---
                 isPaused = false;
                 timeScale = activeSpeed; // Resume to whatever the slider is set to
@@ -2017,10 +2467,59 @@ const sunFragmentShader = `
             let asteroidTime = 0;
             function animate() {
                 requestAnimationFrame(animate);
+
+                // --- ADDED: SKYBOX & LENS GLARE PHYSICS ---
+                if (typeof skyboxMesh !== 'undefined') {
+                    // Slowly drift the background galaxy
+                    skyboxMesh.rotation.y += 0.0001 * timeScale;
+                    skyboxMesh.rotation.x -= 0.00005 * timeScale;
+                }
+
+                if (typeof lensDirtSprite !== 'undefined') {
+                    // Calculate where the camera is looking
+                    const cameraDir = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+                    // Calculate the direction straight to the Sun (which is at 0,0,0)
+                    const sunDir = new THREE.Vector3().subVectors(new THREE.Vector3(0,0,0), camera.position).normalize();
+                    
+                    // Dot Product: 1.0 means looking dead at the sun. -1.0 means looking away.
+                    const lookDot = cameraDir.dot(sunDir);
+                    
+                    // If looking closely at the sun (angle > 0.85), fade the dirt in!
+                    if (lookDot > 0.85) {
+                        // Math to smoothly map the 0.85 - 1.0 threshold into a 0.0 - 0.8 opacity curve
+                        let dirtOpacity = (lookDot - 0.85) * 6.66; 
+                        
+                        // Glare gets stronger the closer the camera flies to the Sun
+                        const distanceMultiplier = Math.max(0.3, 1.0 - (camera.position.length() / 250));
+                        
+                        lensDirtSprite.material.opacity = dirtOpacity * distanceMultiplier;
+                    } else {
+                        lensDirtSprite.material.opacity = 0; // Hide completely
+                    }
+                }
+
                 // Feed the current elapsed time into our custom shaders
                 const elapsedTime = performance.now() * 0.001; // Convert to seconds
                 if (window.sunUniforms) window.sunUniforms.time.value = elapsedTime;
                 if (window.coronaUniforms) window.coronaUniforms.time.value = elapsedTime;
+                if (window.oortUniforms) window.oortUniforms.time.value = elapsedTime;
+                // --- ADDED: ANIMATE SOLAR FLARES ---
+                if (window.solarFlares && timeScale > 0) {
+                    window.solarFlares.forEach(flare => {
+                        // Flow the plasma
+                        flare.uniformObj.time.value = elapsedTime * flare.speed;
+                        
+                        // Slowly drift the magnetic loops across the Sun's surface
+                        flare.pivot.rotation.x += 0.0002 * timeScale;
+                        flare.pivot.rotation.y += 0.0003 * timeScale;
+                    });
+                }
+                // --- ADDED: ANIMATE OORT CLOUD DRIFT ---
+                if (oortGroup.visible && timeScale > 0) {
+                    // Extremely slow, multi-axis rotation to simulate galactic drift
+                    oortGroup.rotation.y += 0.00003 * timeScale;
+                    oortGroup.rotation.z += 0.00001 * timeScale;
+                }
                 if (window.venusUniforms) window.venusUniforms.time.value = elapsedTime;
                 if (window.starUniforms) window.starUniforms.time.value = elapsedTime;
 
@@ -2041,12 +2540,24 @@ const sunFragmentShader = `
 
                     // --- ADDED: PERFECT CAMERA TRACKING ---
                     if (isCameraTracking && timeScale > 0) {
-                        // Calculate the exact 3D distance the planet moved in this single frame
                         const delta = pos.clone().sub(controls.target);
-                        
-                        // Move both the target AND the camera by that exact amount to lock them together
                         controls.target.copy(pos);
                         camera.position.add(delta);
+                    }
+                    
+                    // --- FIXED: DYNAMIC CLIPPING PLANE POSITIONING ---
+                    if (activeTelemetryPlanet) {
+                        const radius = activeTelemetryPlanet.mesh.userData.radius || 4;
+                        if (structureCutawayAmount.value < radius * 1.5) {
+                            // Use a diagonal vector (Right + Slightly Up + Away) for a beautiful 3D wedge cut
+                            const clipNormal = new THREE.Vector3(0.8, 0.2, -1.0).applyQuaternion(camera.quaternion).normalize();
+                            structureClipPlane.normal.copy(clipNormal);
+                            
+                            // CRITICAL MATH FIX: Added the negative sign to anchor exactly to the planet center!
+                            structureClipPlane.constant = -pos.dot(clipNormal) + structureCutawayAmount.value;
+                        } else {
+                            structureClipPlane.constant = 10000; // Keep it safely out of sight
+                        }
                     }
                 }
 
@@ -2084,7 +2595,6 @@ const sunFragmentShader = `
                     p.mesh.rotation.y += 0.01 * timeScale; 
                     
                     // Animate Earth's clouds separately if they exist
-                    // Animate Earth's clouds separately if they exist
                     if (p.mesh.userData.cloudMesh) {
                         // 1. Base atmospheric rotation
                         p.mesh.userData.cloudMesh.rotation.y += 0.001 * timeScale;
@@ -2108,29 +2618,121 @@ const sunFragmentShader = `
                             m.mesh.rotation.y += 0.02 * timeScale;
                         });
                     }
-                    // --- ENHANCED FEATURE 4: ANIMATE COMET, COMA & WISPY SHADER ---
-                    if (p.tailMesh) {
-                        // Lock tail to comet position and point it away from the Sun
-                        p.tailMesh.position.copy(p.group.position);
-                        const targetPos = p.group.position.clone().multiplyScalar(2.0);
-                        p.tailMesh.lookAt(targetPos);
-                        
-                        // Pass global elapsed time to the custom tail shader for movement
-                        p.tailMesh.material.uniforms.time.value = elapsedTime;
-                        
-                        // Calculate distance to Sun (Heat simulation)
+                    // --- FIXED: ANIMATE COMET PARTICLES & COMA ---
+                    if (p.particles) {
                         const distFromSun = p.group.position.length();
-                        const intensity = Math.max(0.05, 1.0 - (distFromSun / 80.0));
+                        // Heat increases as it gets closer to the Sun (Sublimation effect)
+                        const heat = Math.max(0.05, 1.0 - (distFromSun / 80.0));
                         
-                        // Update Tail glow intensity based on solar proximity
-                        p.tailMesh.material.uniforms.intensity.value = intensity;
+                        // Solar wind direction (pointing exactly away from the Sun)
+                        const sunWindDir = p.group.position.clone().normalize();
+                        
+                        // How many particles to spawn this frame (hotter = more particles)
+                        let emitCount = Math.floor(20 * heat * timeScale); 
+
+                        for (let i = 0; i < p.particles.count; i++) {
+                            // 1. SPAWN DEAD PARTICLES
+                            if (p.particles.life[i] <= 0 && emitCount > 0) {
+                                p.particles.life[i] = 1.0 + (Math.random() * 0.5); // Give it a lifespan
+                                
+                                // Spawn slightly randomized around the comet core
+                                p.particles.pos[i*3] = p.group.position.x + (Math.random() - 0.5) * 0.8;
+                                p.particles.pos[i*3+1] = p.group.position.y + (Math.random() - 0.5) * 0.8;
+                                p.particles.pos[i*3+2] = p.group.position.z + (Math.random() - 0.5) * 0.8;
+
+                                // Base velocity is solar wind, plus some random outward spread
+                                const windSpeed = 1.5 + (heat * 2.0);
+                                p.particles.vel[i*3] = (sunWindDir.x * windSpeed) + (Math.random() - 0.5) * 0.5;
+                                p.particles.vel[i*3+1] = (sunWindDir.y * windSpeed) + (Math.random() - 0.5) * 0.5;
+                                p.particles.vel[i*3+2] = (sunWindDir.z * windSpeed) + (Math.random() - 0.5) * 0.5;
+
+                                emitCount--;
+                            }
+
+                            // 2. MOVE ALIVE PARTICLES
+                            if (p.particles.life[i] > 0) {
+                                p.particles.pos[i*3] += p.particles.vel[i*3] * timeScale;
+                                p.particles.pos[i*3+1] += p.particles.vel[i*3+1] * timeScale;
+                                p.particles.pos[i*3+2] += p.particles.vel[i*3+2] * timeScale;
+                                
+                                // Particle fades out and dies over time
+                                p.particles.life[i] -= 0.015 * timeScale; 
+                            }
+                        }
+
+                        // Flag the GPU to update the positions and sizes this frame!
+                        p.particles.mesh.geometry.attributes.position.needsUpdate = true;
+                        p.particles.mesh.geometry.attributes.lifetime.needsUpdate = true;
                         
                         // Update Coma glow and size (Sublimation effect)
                         if (p.comaMesh) {
-                            p.comaMesh.material.opacity = intensity * 0.7;
-                            const scale = 1.0 + (intensity * 0.8);
+                            p.comaMesh.material.opacity = heat * 0.7;
+                            const scale = 1.0 + (heat * 0.8);
                             p.comaMesh.scale.set(scale, scale, scale);
                         }
+                    }
+                });
+                // --- ADDED: UPDATE SPACETIME GRAVITY GRID ---
+                if (spacetimeGrid.visible) {
+                    // Send Sun Data (Index 0) - Massive gravity well
+                    gravityBodies[0].set(0, 0, 0, 80.0); 
+                    
+                    // Send Planet Data (Indices 1 to 8)
+                    for (let i = 0; i < 8; i++) {
+                        if (planets[i]) {
+                            // The larger the planet's radius, the heavier its mass
+                            const planetMass = planets[i].mesh.userData.radius * 2.2; 
+                            
+                            gravityBodies[i + 1].set(
+                                planets[i].group.position.x, 
+                                planets[i].group.position.y, 
+                                planets[i].group.position.z, 
+                                planetMass
+                            );
+                        }
+                    }
+                }
+                // --- ADDED: UPDATE VELOCITY RIBBONS ---
+                planets.forEach(p => {
+                    if (p.trailLine && p.trailLine.visible && timeScale > 0) {
+                        const currentPos = p.group.position.clone();
+                        
+                        // 1. Calculate Velocity & Color (Hot Red = Fast/Close, Deep Blue = Slow/Far)
+                        const dist = currentPos.length();
+                        const perihelion = p.a * (1 - p.e);
+                        const aphelion = p.a * (1 + p.e);
+                        
+                        // Map distance to a 0.0 to 1.0 factor based on Kepler's mechanics
+                        let speedFactor = (p.e === 0) ? 0.5 : 1.0 - ((dist - perihelion) / (aphelion - perihelion));
+                        speedFactor = Math.max(0.0, Math.min(1.0, speedFactor)); // Safety clamp
+                        
+                        const fastColor = new THREE.Color(0xff2200); // Blazing hot red
+                        const slowColor = new THREE.Color(0x0066ff); // Deep cold blue
+                        const currentColor = slowColor.clone().lerp(fastColor, speedFactor);
+                        
+                        // 2. Populate history array instantly on first frame to prevent stretching from origin
+                        if (p.trailHistory.length === 0) {
+                            for(let i=0; i<150; i++) p.trailHistory.push({ pos: currentPos, col: currentColor });
+                        }
+
+                        // 3. Shift History Arrays
+                        p.trailHistory.unshift({ pos: currentPos, col: currentColor });
+                        if (p.trailHistory.length > 150) p.trailHistory.pop();
+                        
+                        // 4. Update the actual 3D Geometry
+                        for (let i = 0; i < p.trailHistory.length; i++) {
+                            const pt = p.trailHistory[i];
+                            p.trailPositions[i * 3] = pt.pos.x;
+                            p.trailPositions[i * 3 + 1] = pt.pos.y;
+                            p.trailPositions[i * 3 + 2] = pt.pos.z;
+                            
+                            p.trailColors[i * 3] = pt.col.r;
+                            p.trailColors[i * 3 + 1] = pt.col.g;
+                            p.trailColors[i * 3 + 2] = pt.col.b;
+                        }
+                        
+                        p.trailLine.geometry.attributes.position.needsUpdate = true;
+                        p.trailLine.geometry.attributes.color.needsUpdate = true;
                     }
                 });
 
