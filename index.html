@@ -876,109 +876,98 @@ const sunFragmentShader = `
             const planets = [];
             const orbitLines = [];
             let sunMesh;
-            // --- IMPROVED OORT CLOUD (Dynamic, Twinkling, Hills Cloud Distribution) ---
-            const oortGroup = new THREE.Group();
-            const oortCount = 12000; // Increased count for better density
-            const oortGeo = new THREE.BufferGeometry();
+            // --- OPTIMIZED OORT CLOUD (InstancedMesh) ---
+const oortGroup = new THREE.Group();
+const oortCount = 12000;
+
+// Use an Icosahedron for slightly more jagged ice-chunks
+const baseOortGeo = new THREE.IcosahedronGeometry(0.5, 0); 
+
+const oortUniforms = { time: { value: 0.0 } };
+window.oortUniforms = oortUniforms;
+
+const oortMat = new THREE.ShaderMaterial({
+    uniforms: oortUniforms,
+    vertexShader: `
+        uniform float time;
+        attribute vec3 staticPosition;
+        attribute vec3 customColor;
+        attribute float phase;
+        attribute float randomScale;
+        
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+            vColor = customColor;
             
-            const oortPos = new Float32Array(oortCount * 3);
-            const oortColors = new Float32Array(oortCount * 3);
-            const oortSizes = new Float32Array(oortCount);   // New: Individual sizes
-            const oortPhases = new Float32Array(oortCount);  // New: For twinkling
+            // Twinkle math
+            float twinkle = 0.5 + 0.5 * sin(time * 0.5 + phase);
+            vAlpha = 0.1 + (twinkle * 0.4); 
+            
+            // Dynamic scale pulse
+            vec3 scaledPos = position * (randomScale * (0.8 + twinkle * 0.2));
+            vec3 finalPos = scaledPos + staticPosition;
 
-            const oortInnerRadius = 2500;
-            const oortOuterRadius = 4500; // Pushed out further for scale
+            vec4 mvPosition = viewMatrix * modelMatrix * vec4(finalPos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `,
+    fragmentShader: `
+        varying vec3 vColor;
+        varying float vAlpha;
+        void main() {
+            gl_FragColor = vec4(vColor, vAlpha);
+        }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+});
 
-            for(let i = 0; i < oortCount; i++) {
-                // 1. Spherical angle distribution
-                const u = Math.random();
-                const v = Math.random();
-                const theta = u * 2.0 * Math.PI;
-                const phi = Math.acos(2.0 * v - 1.0);
-                
-                // 2. Non-linear distribution: Bias towards the inner edge (Hills Cloud effect)
-                // Using Math.pow concentrates the random values closer to 0
-                const radiusFraction = Math.pow(Math.random(), 2.5); 
-                const r = oortInnerRadius + radiusFraction * (oortOuterRadius - oortInnerRadius);
+const oortMesh = new THREE.InstancedMesh(baseOortGeo, oortMat, oortCount);
+oortMesh.frustumCulled = false;
 
-                oortPos[i*3]     = r * Math.sin(phi) * Math.cos(theta);
-                oortPos[i*3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-                oortPos[i*3 + 2] = r * Math.cos(phi);
+const oortPosArray = new Float32Array(oortCount * 3);
+const oortColorArray = new Float32Array(oortCount * 3);
+const oortPhaseArray = new Float32Array(oortCount);
+const oortScaleArray = new Float32Array(oortCount);
 
-                // 3. Icy colors: Whites, pale blues, and faint cyans
-                const colorType = Math.random();
-                if (colorType > 0.7) {
-                    oortColors[i*3] = 0.9; oortColors[i*3+1] = 0.9; oortColors[i*3+2] = 1.0; // Ice white
-                } else if (colorType > 0.3) {
-                    oortColors[i*3] = 0.6; oortColors[i*3+1] = 0.8; oortColors[i*3+2] = 1.0; // Pale blue
-                } else {
-                    oortColors[i*3] = 0.4; oortColors[i*3+1] = 0.6; oortColors[i*3+2] = 0.9; // Deep icy blue
-                }
-                
-                // 4. Randomize sizes and twinkle phases
-                oortSizes[i] = 0.5 + Math.random() * 2.5; // Varying chunk sizes
-                oortPhases[i] = Math.random() * Math.PI * 2; // Unique blink start time
-            }
+const oortInnerRadius = 2500;
+const oortOuterRadius = 4500;
 
-            oortGeo.setAttribute('position', new THREE.BufferAttribute(oortPos, 3));
-            oortGeo.setAttribute('color', new THREE.BufferAttribute(oortColors, 3));
-            oortGeo.setAttribute('size', new THREE.BufferAttribute(oortSizes, 1));
-            oortGeo.setAttribute('phase', new THREE.BufferAttribute(oortPhases, 1));
+for(let i = 0; i < oortCount; i++) {
+    const u = Math.random(); const v = Math.random();
+    const theta = u * 2.0 * Math.PI;
+    const phi = Math.acos(2.0 * v - 1.0);
+    const radiusFraction = Math.pow(Math.random(), 2.5); 
+    const r = oortInnerRadius + radiusFraction * (oortOuterRadius - oortInnerRadius);
 
-            // 5. Improved Shader with Twinkling
-            const oortUniforms = { time: { value: 0.0 } };
-            window.oortUniforms = oortUniforms; // Expose to the animation loop
+    oortPosArray[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    oortPosArray[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    oortPosArray[i*3+2] = r * Math.cos(phi);
 
-            const oortMat = new THREE.ShaderMaterial({
-                uniforms: oortUniforms,
-                vertexShader: `
-                    uniform float time;
-                    attribute vec3 color;
-                    attribute float size;
-                    attribute float phase;
-                    varying vec3 vColor;
-                    varying float vAlpha;
-                    void main() {
-                        vColor = color;
-                        
-                        // Twinkle math: slow pulse based on phase and time
-                        float twinkle = 0.5 + 0.5 * sin(time * 0.5 + phase);
-                        vAlpha = 0.05 + (twinkle * 0.25); // Opacity pulses smoothly
-                        
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        
-                        // Dynamic sizing based on the individual size attribute and twinkle
-                        gl_PointSize = (18000.0 * size * (0.8 + twinkle * 0.2)) / -mvPosition.z; 
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    varying vec3 vColor;
-                    varying float vAlpha;
-                    void main() {
-                        // Carve point into a soft circle
-                        vec2 xy = gl_PointCoord.xy - vec2(0.5);
-                        float dist = length(xy);
-                        if (dist > 0.5) discard;
-                        
-                        // Soft gradient edge
-                        float alpha = (0.5 - dist) * 2.0 * vAlpha;
-                        
-                        // Give it a subtle hot core
-                        vec3 finalColor = mix(vColor, vec3(1.0), 1.0 - (dist * 2.0));
-                        
-                        gl_FragColor = vec4(finalColor, alpha); 
-                    }
-                `,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
+    const colorType = Math.random();
+    if (colorType > 0.7) {
+        oortColorArray[i*3]=0.9; oortColorArray[i*3+1]=0.9; oortColorArray[i*3+2]=1.0; 
+    } else if (colorType > 0.3) {
+        oortColorArray[i*3]=0.6; oortColorArray[i*3+1]=0.8; oortColorArray[i*3+2]=1.0; 
+    } else {
+        oortColorArray[i*3]=0.4; oortColorArray[i*3+1]=0.6; oortColorArray[i*3+2]=0.9; 
+    }
 
-            const oortMesh = new THREE.Points(oortGeo, oortMat);
-            oortGroup.add(oortMesh);
-            oortGroup.visible = false; 
-            scene.add(oortGroup);
+    oortScaleArray[i] = 0.5 + Math.random() * 2.5;
+    oortPhaseArray[i] = Math.random() * Math.PI * 2;
+}
+
+baseOortGeo.setAttribute('staticPosition', new THREE.InstancedBufferAttribute(oortPosArray, 3));
+baseOortGeo.setAttribute('customColor', new THREE.InstancedBufferAttribute(oortColorArray, 3));
+baseOortGeo.setAttribute('phase', new THREE.InstancedBufferAttribute(oortPhaseArray, 1));
+baseOortGeo.setAttribute('randomScale', new THREE.InstancedBufferAttribute(oortScaleArray, 1));
+
+oortGroup.add(oortMesh);
+oortGroup.visible = false; 
+scene.add(oortGroup);
             
 
             systemData.forEach((data) => {
@@ -1659,99 +1648,77 @@ const sunFragmentShader = `
                 }
             });
             
-            // --- 8.5 Asteroid Belt ---
-            const asteroidBeltGroup = new THREE.Group();
-            const asteroidCount = 4000;
-            const asteroidGeo = new THREE.BufferGeometry();
-            const asteroidPos = new Float32Array(asteroidCount * 3);
+            // --- OPTIMIZED ASTEROID BELT (InstancedMesh) ---
+const asteroidBeltGroup = new THREE.Group();
+const asteroidCount = 4000;
 
-            // 1. Create a perfectly round circle texture using a hidden canvas
-            const circleCanvas = document.createElement('canvas');
-            circleCanvas.width = 32;
-            circleCanvas.height = 32;
-            const circleCtx = circleCanvas.getContext('2d');
-            circleCtx.beginPath();
-            circleCtx.arc(16, 16, 16, 0, Math.PI * 2);
-            circleCtx.fillStyle = '#ffffff'; // We make it white so the material color can tint it
-            circleCtx.fill();
-            const circleTexture = new THREE.CanvasTexture(circleCanvas);
+// 1. Base Geometry: A low-poly 3D rock (12 faces is incredibly cheap for the GPU)
+const baseAsteroidGeo = new THREE.DodecahedronGeometry(0.1, 0); 
 
-            // Mars is at distance 40, Jupiter is at 58. We fill the space between them.
-            const innerRadius = 44;
-            const outerRadius = 53;
+// 2. Custom Shader Material mapped to the InstancedMesh
+const asteroidUniforms = {
+    time: { value: 0.0 },
+    baseColor: { value: new THREE.Color(0x8a7f70) }
+};
 
-            for (let i = 0; i < asteroidCount; i++) {
-                const theta = Math.random() * Math.PI * 2;
-                const radius = innerRadius + Math.random() * (outerRadius - innerRadius);
-                const y = (Math.random() - 0.5) * 1.5; 
+const asteroidMat = new THREE.ShaderMaterial({
+    uniforms: asteroidUniforms,
+    vertexShader: `
+        uniform float time;
+        
+        // Custom instance attributes we will define below
+        attribute vec4 orbitParams; // x: radius, y: speed, z: startingAngle, w: yOffset
+        attribute vec3 randomScale; // To make them different sizes
+        attribute vec3 randomRotation; // To give them a tumble
 
-                asteroidPos[i * 3] = Math.cos(theta) * radius;
-                asteroidPos[i * 3 + 1] = y;
-                asteroidPos[i * 3 + 2] = Math.sin(theta) * radius;
-            }
+        varying vec3 vColor;
 
-            asteroidGeo.setAttribute('position', new THREE.BufferAttribute(asteroidPos, 3));
+        void main() {
+            // Unpack our packed data
+            float r = orbitParams.x;
+            float speed = orbitParams.y;
+            float angle = orbitParams.z + (speed * time);
+            float yOffset = orbitParams.w;
+
+            // 1. Apply unique scaling to the base geometry
+            vec3 scaledPos = position * randomScale;
+
+            // 2. Apply a basic rotation tumble based on time and their unique rotation seed
+            float cX = cos(time * randomRotation.x); float sX = sin(time * randomRotation.x);
+            float cY = cos(time * randomRotation.y); float sY = sin(time * randomRotation.y);
             
-            // 2. Apply Keplerian Physics via Custom ShaderMaterial
-            const asteroidUniforms = {
-                time: { value: 0.0 },
-                color: { value: new THREE.Color(0x8a7f70) },
-                pointTexture: { value: circleTexture }
-            };
+            mat3 rotX = mat3(1.0, 0.0, 0.0, 0.0, cX, -sX, 0.0, sX, cX);
+            mat3 rotY = mat3(cY, 0.0, sY, 0.0, 1.0, 0.0, -sY, 0.0, cY);
+            
+            vec3 rotatedPos = rotY * rotX * scaledPos;
 
-            const asteroidMat = new THREE.ShaderMaterial({
-                uniforms: asteroidUniforms,
-                vertexShader: `
-                    uniform float time;
-                    void main() {
-                        // 1. Calculate the asteroid's distance from the Sun (radius)
-                        float r = sqrt(position.x * position.x + position.z * position.z);
-                        
-                        // 2. KEPLER'S THIRD LAW: Velocity is proportional to r^(-1.5)
-                        // We multiply by 15.0 to scale the speed so it looks good in the engine
-                        float angularSpeed = 15.0 * pow(r, -1.5); 
-                        
-                        // 3. Find its original starting angle
-                        float currentAngle = atan(position.z, position.x);
-                        
-                        // 4. Calculate its new angle based on time and its unique speed
-                        float newAngle = currentAngle + (angularSpeed * time);
-                        
-                        // 5. Apply the new position
-                        vec3 newPos = position;
-                        newPos.x = r * cos(newAngle);
-                        newPos.z = r * sin(newAngle);
-                        
-                        vec4 mvPosition = modelViewMatrix * vec4(newPos, 1.0);
-                        
-                        // Calculate perspective size (makes them smaller as they get further away)
-                        gl_PointSize = 40.0 / -mvPosition.z; 
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    uniform vec3 color;
-                    uniform sampler2D pointTexture;
-                    void main() {
-                        // Sample our custom round circle texture
-                        vec4 texColor = texture2D(pointTexture, gl_PointCoord);
-                        
-                        // Delete the invisible corners of the square texture (Alpha Test)
-                        if (texColor.a < 0.5) discard; 
-                        
-                        gl_FragColor = vec4(color * texColor.rgb, 0.8);
-                    }
-                `,
-                transparent: true,
-                depthWrite: false
-            });
+            // 3. Translate to the orbital position
+            vec3 orbitPos = vec3(
+                r * cos(angle),
+                yOffset,
+                r * sin(angle)
+            );
 
-            // Expose uniform to the window so the animation loop can feed time into it
-            window.asteroidUniforms = asteroidUniforms;
+            vec3 finalPos = rotatedPos + orbitPos;
 
-            const asteroidBelt = new THREE.Points(asteroidGeo, asteroidMat);
-            asteroidBeltGroup.add(asteroidBelt);
-            scene.add(asteroidBeltGroup);
+            vec4 mvPosition = viewMatrix * modelMatrix * vec4(finalPos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+
+            // Fake directional lighting (makes the 3D rocks pop without expensive light calculations)
+            float fakeLight = dot(normalize(finalPos), vec3(0.0, 0.0, 1.0));
+            vColor = baseColor * (0.6 + 0.4 * fakeLight); 
+        }
+    `,
+    fragmentShader: `
+        varying vec3 vColor;
+        void main() {
+            gl_FragColor = vec4(vColor, 1.0);
+        }
+    `
+});
+
+// Create the unified InstancedMesh
+const asteroidMesh = new THREE.InstancedMesh(baseAsteroidGeo, asteroidMat, asteroidCount);
             // --- 8.6 The Habitable "Goldilocks" Zone ---
             // Spans from just inside Earth's orbit (distance: 30) to just outside Mars (distance: 40)
             const hzInnerRadius = 26;
